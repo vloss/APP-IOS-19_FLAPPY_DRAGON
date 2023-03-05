@@ -15,7 +15,12 @@ class GameScene: SKScene {
     
     // Quando a scene foi movida para a View - EM exibição na tela
     override func didMove(to view: SKView) {
-        
+        addBackground()
+    }
+    
+    func addBackground(){
+        guard let background = SKSpriteNode(fileNamed: "background") else { return }
+        addChild(background)
     }
     
     
