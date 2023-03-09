@@ -8,10 +8,13 @@
 import UIKit
 import SpriteKit
 import GameplayKit
+import AVFoundation
 
-var stage: SKView!
 
 class GameViewController: UIViewController {
+    
+    var stage: SKView!
+    var muscicPlayer: AVAudioPlayer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,12 +23,25 @@ class GameViewController: UIViewController {
         stage.ignoresSiblingOrder = true // Para fazer manualmente o posicionamento de elementos no eixo Z
         
         presentScene()
+        playMusic()
+    }
+    
+    func playMusic (){
+        if let musicURL = Bundle.main.url(forResource: "music", withExtension: "m4a"){
+            muscicPlayer = try! AVAudioPlayer(contentsOf: musicURL)
+            muscicPlayer.numberOfLoops = -1
+            muscicPlayer.volume = 0.4
+            muscicPlayer.play()
+        }
     }
 
     func presentScene(){
         let scene = GameScene(size: CGSize(width: 320, height: 568))
+        scene.gameViewController = self
         scene.scaleMode = .aspectFill
-        stage.presentScene(scene)
+        //stage.presentScene(scene)
+        stage.presentScene(scene, transition: .doorsOpenVertical(withDuration: 0.5))
+        
     }
     
     override var prefersStatusBarHidden: Bool {

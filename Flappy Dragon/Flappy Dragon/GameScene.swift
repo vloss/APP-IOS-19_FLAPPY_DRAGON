@@ -25,6 +25,9 @@ class GameScene: SKScene {
     var enemyCategory: UInt32 = 2
     var scoreCategory: UInt32 = 4
     var timer: Timer!
+    weak var gameViewController: GameViewController?
+    let scoreSound = SKAction.playSoundFileNamed("score.mp3", waitForCompletion: false)
+    let gameOverSound = SKAction.playSoundFileNamed("hit.mp3", waitForCompletion: false)
     
     // Quando a scene foi movida para a View - EM exibição na tela
     override func didMove(to view: SKView) {
@@ -162,7 +165,7 @@ class GameScene: SKScene {
         gameFinished = true
         gameStarted = false
         
-        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { (timer) in
             let gameOverLabel = SKLabelNode(fontNamed: "Chalkduster")
             gameOverLabel.fontColor = .red
             gameOverLabel.fontSize = 40
@@ -201,7 +204,7 @@ class GameScene: SKScene {
         } else {
             if restart {
                 restart = false
-                
+                gameViewController?.presentScene()
             }
         }
     }
@@ -231,8 +234,10 @@ extension GameScene: SKPhysicsContactDelegate {
             if contact.bodyA.categoryBitMask == scoreCategory || contact.bodyB.categoryBitMask == scoreCategory {
                 score += 1
                 scoreLabel.text = "\(score)"
+                run(scoreSound)
             } else if contact.bodyA.categoryBitMask == enemyCategory || contact.bodyB.categoryBitMask == enemyCategory {
                 gameOver()
+                run(gameOverSound)
             }
         }
     }
